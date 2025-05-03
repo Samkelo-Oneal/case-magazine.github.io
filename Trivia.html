@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>CASE Magazine Trivia</title>
+ <style>
+ body {
+ font-family: 'Arial', sans-serif;
+ background-image: url('your-background-image.jpg'); /* Change this to your background image URL */
+ background-size: cover;
+ background-position: center;
+ color: #333;
+ padding: 20px;
+ margin: 0;
+ }
+ .quiz-container {
+ background: rgba(255, 255, 255, 0.9);
+ border-radius: 10px;
+ padding: 20px;
+ box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+ max-width: 600px;
+ margin: auto;
+ }
+ h1 {
+ color: #4202f4;
+ text-align: center;
+ margin-bottom: 20px;
+ }
+ .question {
+ font-size: 1.5em;
+ margin-bottom: 15px;
+ font-weight: bold;
+ text-align: center;
+ }
+ .options {
+ margin-bottom: 20px;
+ }
+ .option {
+ display: block;
+ margin: 10px 0;
+ padding: 15px;
+ background: #f0f0f0;
+ border-radius: 5px;
+ cursor: pointer;
+ transition: background 0.3s;
+ box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+ }
+ .option:hover {
+ background: #e0e0e0;
+ }
+ .score {
+ text-align: center;
+ font-size: 1.5em;
+ margin: 20px 0;
+ }
+ .timer {
+ text-align: center;
+ font-size: 1.2em;
+ color: #ff0000;
+ margin: 10px 0;
+ }
+ .next-btn {
+ display: block;
+ width: 100%;
+ padding: 15px;
+ background: #4202f4;
+ color: white;
+ border: none;
+ border-radius: 5px;
+ cursor: pointer;
+ font-size: 1.2em;
+ transition: background 0.3s;
+ }
+ .next-btn:hover {
+ background: #5d5fe2;
+ }
+ .explanation {
+ margin-top: 20px;
+ padding: 15px;
+ background: #e8f4f8;
+ border-radius: 5px;
+ display: none;
+ text-align: center;
+ }
+ .final-results {
+ text-align: center;
+ }
+ .replay-btn {
+ display: block;
+ width: 100%;
+ padding: 15px;
+ background: #4CAF50;
+ color: white;
+ border: none;
+ border-radius: 5px;
+ cursor: pointer;
+ font-size: 1.2em;
+ margin-top: 20px;
+ }
+ .replay-btn:hover {
+ background: #45a049;
+ }
+ </style>
+</head>
+<body>
+ <div class="quiz-container">
+ <h1>CASE Magazine Trivia</h1>
+ <div class="score">Score: <span id="score">0</span></div>
+ <div class="timer" id="timer">Time left: <span id="time">15</span>s</div>
+ <div class="question" id="question"></div>
+ <div class="options" id="options"></div>
+ <button class="next-btn" id="next-btn">Next Question</button>
+ <div class="explanation" id="explanation"></div>
+ <div class="final-results" id="final-results" style="display:none;"></div>
+ <button class="replay-btn" id="replay-btn" style="display:none;">Replay Quiz</button>
+ </div>
+
+ <script>
+ const questions = [
+ {
+ question: "What was the date of the Chernobyl nuclear disaster?",
+ options: ["April 26, 1986", "May 12, 1986", "March 28, 1979", "August 6, 1945"],
+ answer: 0,
+ explanation: "The Chernobyl disaster occurred on April 26, 1986, in reactor #4 of the Soviet plant."
+ },
+ {
+ question: "What was the name of Julius Caesar's most famous wife?",
+ options: ["Cleopatra", "Calpurnia", "Cornelia", "Livia"],
+ answer: 1,
+ explanation: "Calpurnia was Caesar's wife during his assassination. (Psst—Cleopatra was his lover!)"
+ },
+ {
+ question: "What is the name of the largest pyramid in Egypt?",
+ options: ["Pyramid of Khafre", "Red Pyramid", "Great Pyramid of Giza", "Bent Pyramid"],
+ answer: 2,
+ explanation: "The Great Pyramid of Giza, built for Pharaoh Khufu, stands 481 feet tall."
+ },
+ {
+ question: "What is the capital of Belarus?",
+ options: ["Kyiv", "Vilnius", "Minsk", "Warsaw"],
+ answer: 2,
+ explanation: "Minsk has been Belarus's capital since 1919 and survived WWII devastation."
+ },
+ {
+ question: "What is the operating system for Apple phones called?",
+ options: ["Android", "iOS", "macOS", "Windows Mobile"],
+ answer: 1,
+ explanation: "iOS debuted in 2007 with the first iPhone and now powers over 1.5 billion devices."
+ },
+ {
+ question: "Who is often called the 'father of electricity'?",
+ options: ["Thomas Edison", "Nikola Tesla", "Benjamin Franklin", "Michael Faraday"],
+ answer: 3,
+ explanation: "Michael Faraday's 1831 discovery of electromagnetic induction birthed modern electrical engineering."
+ }
+ ];
+
+ let currentQuestion = 0;
+ let score = 0;
+ let timer;
+ const TIMER_DURATION = 15; // 15 seconds for each question
+
+ const questionEl = document.getElementById('question');
+ const optionsEl = document.getElementById('options');
+ const scoreEl = document.getElementById('score');
+ const timeEl = document.getElementById('time');
+ const nextBtn = document.getElementById('next-btn');
+ const explanationEl = document.getElementById('explanation');
+ const finalResultsEl = document.getElementById('final-results');
+ const replayBtn = document.getElementById('replay-btn');
+
+ function loadQuestion() {
+ const q = questions[currentQuestion];
+ questionEl.textContent = q.question;
+
+ optionsEl.innerHTML = '';
+ q.options.forEach((option, index) => {
+  const optionEl = document.createElement('div');
+  optionEl.classList.add('option');
+  optionEl.textContent = option;
+  optionEl.addEventListener('click', () => selectOption(index));
+  optionsEl.appendChild(optionEl);
+ });
+
+ explanationEl.style.display = 'none';
+ nextBtn.style.display = 'none';
+ selectedOption = null;
+ startTimer();
+ }
+
+ function startTimer() {
+ let timeLeft = TIMER_DURATION;
+ timeEl.textContent = timeLeft;
+
+ timer = setInterval(() => {
+  if (timeLeft > 0) {
+   timeLeft--;
+   timeEl.textContent = timeLeft;
+  } else {
+   clearInterval(timer);
+   selectOption(-1); // Time's up, treat as wrong selection
+  }
+ }, 1000);
+ }
+
+ function selectOption(index) {
+ clearInterval(timer);
+ const options = document.querySelectorAll('.option');
+
+ if (index !== -1) {
+  selectedOption = index;
+
+  options.forEach((option, i) => {
+   if (i === questions[currentQuestion].answer) {
+    option.style.background = '#a5d6a7'; // Green for correct
+   } else if (i === index) {
+    option.style.background = '#ef9a9a'; // Red for wrong
+   }
+   option.style.cursor = 'default';
+  });
+
+  if (index === questions[currentQuestion].answer) {
+   score++;
+   scoreEl.textContent = score;
+  }
+
+  explanationEl.textContent = questions[currentQuestion].explanation;
+  explanationEl.style.display = 'block';
+  nextBtn.style.display = 'block';
+ } else {
+  options[currentQuestion].style.background = '#ef9a9a'; // Show as wrong if time is up
+  explanationEl.textContent = "Time's up! The correct answer was: " + questions[currentQuestion].options[questions[currentQuestion].answer];
+  explanationEl.style.display = 'block';
+  nextBtn.style.display = 'block';
+ }
+ }
+
+ function nextQuestion() {
+ currentQuestion++;
+ if (currentQuestion < questions.length) {
+  loadQuestion();
+ } else {
+  showResults();
+ }
+ }
+
+ function showResults() {
+  questionEl.style.display = 'none';
+  optionsEl.innerHTML = '';
+  nextBtn.style.display = 'none';
+  explanationEl.style.display = 'none';
+  finalResultsEl.innerHTML = `Quiz complete! Your score: ${score}/${questions.length} (${(score / questions.length * 100).toFixed(2)}%)`;
+  finalResultsEl.style.display = 'block';
+  replayBtn.style.display = 'block';
+ }
+
+ function replayQuiz() {
+ currentQuestion = 0;
+ score = 0;
+ scoreEl.textContent = score;
+ finalResultsEl.style.display = 'none';
+ replayBtn.style.display = 'none';
+ loadQuestion();
+ }
+
+ nextBtn.addEventListener('click', nextQuestion);
+ replayBtn.addEventListener('click', replayQuiz);
+
+ loadQuestion();
+ </script>
+</body>
+</html>

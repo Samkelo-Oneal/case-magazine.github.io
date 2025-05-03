@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CASE Magazine | Premium Content</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #2a2a2a;
+            --secondary: #1a1a1a;
+            --accent: #4202f4;
+            --text: #f0f0f0;
+            --light-gray: #444;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Side Panel */
+        .side-panel {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: var(--secondary);
+            padding: 30px 20px;
+            z-index: 100;
+            transition: transform 0.3s;
+        }
+        .side-panel.hidden {
+            transform: translateX(-100%);
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: var(--accent);
+        }
+        .nav-links {
+            list-style: none;
+        }
+        .nav-links li {
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        .social-links {
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+        }
+        .social-links a {
+            color: var(--text);
+            font-size: 1.5rem;
+            margin-right: 15px;
+            transition: color 0.2s;
+        }
+        .social-links a:hover {
+            color: var(--accent);
+        }
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 101;
+            display: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 50px;
+        }
+        .hero-text h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            opacity: 0.9;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-right: 15px;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            background-color: #2a00c0;
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--accent);
+        }
+        .btn-outline:hover {
+            background-color: var(--accent);
+        }
+        .btn-trivia {
+            background-color: #ff6b00;
+            margin-top: 15px;
+        }
+        .btn-trivia:hover {
+            background-color: #e05d00;
+        }
+
+        /* Image Styles */
+        .magazine-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s;
+        }
+        .magazine-image:hover {
+            transform: scale(1.03);
+        }
+        .hero-image {
+            width: 300px;
+        }
+        .issue-image {
+            width: 100%;
+            height: 350px;
+            object-fit: contain;
+            background-color: #2a2a2a;
+        }
+
+        /* Issues Grid */
+        .issues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        .issue-card {
+            background-color: var(--secondary);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .issue-card:hover {
+            transform: translateY(-10px);
+        }
+        .issue-info {
+            padding: 20px;
+        }
+        .issue-info h3 {
+            margin-bottom: 10px;
+        }
+        .issue-info p {
+            opacity: 0.7;
+            margin-bottom: 15px;
+        }
+        .issue-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* PDF Viewer Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            width: 80%;
+            height: 80%;
+            background-color: var(--secondary);
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--accent);
+        }
+        .pdf-viewer {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 5px;
+        }
+
+        /* Footer */
+        footer {
+            margin-left: 250px;
+            padding: 30px;
+            text-align: center;
+            background-color: var(--secondary);
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .side-panel {
+                transform: translateX(-100%);
+            }
+            .side-panel.visible {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            .hero-text p {
+                max-width: 100%;
+            }
+            .hero-buttons {
+                margin-bottom: 30px;
+            }
+            .hero-image {
+                width: 100%;
+                max-width: 300px;
+                margin-top: 20px;
+            }
+            footer {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Side Panel -->
+    <div class="side-panel">
+        <div class="logo">CASE MAGAZINE</div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#issues">Issues</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <div class="social-links">
+            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <div class="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-text">
+                <h1>Premium Content, Unmatched Style</h1>
+                <p>Explore the dynamic world of advertising and more with CASE Magazine. Our publication offers a comprehensive blend of insightful articles, industry trends, and innovative strategies that span marketing, communication, and beyond. Join a diverse community of professionals committed to excellence and creativity in their fields. 
+Don't miss the opportunity to enhance your expertise and stay ahead of the curve. Subscribe today to enjoy a wealth of knowledge and inspiration designed for your success.
+CASE Magazine: Where Ideas Flourish and Opportunities Abound.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn">Buy Latest Issue</a>
+                    <a href="#" class="btn btn-outline">Free Sample</a>
+                    <a href="trivia.html" class="btn btn-trivia">Play Trivia Challenge</a>
+                </div>
+            </div>
+            <img src="images/Cover.jpg" alt="CASE Magazine Cover" class="magazine-image hero-image">
+        </section>
+
+        <!-- Issues Grid -->
+        <section id="issues">
+            <h2>Recent Issues</h2>
+            <div class="issues-grid">
+                <!-- Issue 1 -->
+                <div class="issue-card">
+                    <img src="images/Cover.jpg" alt="Issue 15 Cover" class="magazine-image issue-image">
+                    <div class="issue-info">
+                        <h3>Issue #3: The Future of Design</h3>
+                        <p>Exploring cutting-edge trends in modern design</p>
+                        <div class="issue-actions">
+                            <a href="#" class="btn" style="padding: 8px 15px;">Buy</a>
+                            <a href="#" class="btn btn-outline preview-btn" style="padding: 8px 15px;" data-pdf="pdfs/Issue One.pdf">Preview</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue 2 -->
+                <div class="issue-card">
+                    <img src="images/Cover.jpg" alt="Issue 14 Cover" class="magazine-image issue-image">
+                    <div class="issue-info">
+                        <h3>Issue #2: Creative Minds</h3>
+                        <p>Profiles of the most innovative thinkers today</p>
+                        <div class="issue-actions">
+                            <a href="#" class="btn" style="padding: 8px 15px;">Buy</a>
+                            <a href="#" class="btn btn-outline preview-btn" style="padding: 8px 15px;" data-pdf="pdfs/Issue One.pdf">Preview</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue 3 -->
+                <div class="issue-card">
+                    <img src="images/Cover.jpg" alt="Issue 13 Cover" class="magazine-image issue-image">
+                    <div class="issue-info">
+                        <h3>Issue #1: Minimalism</h3>
+                        <p>The art of doing more with less</p>
+                        <div class="issue-actions">
+                            <a href="#" class="btn" style="padding: 8px 15px;">Buy</a>
+                            <a href="#" class="btn btn-outline preview-btn" style="padding: 8px 15px;" data-pdf="pdfs/Issue One.pdf">Preview</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- PDF Viewer Modal -->
+    <div class="modal" id="pdfModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <iframe class="pdf-viewer" src="" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 CASE Magazine. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidePanel = document.querySelector('.side-panel');
+
+        menuToggle.addEventListener('click', () => {
+            sidePanel.classList.toggle('visible');
+        });
+
+        // PDF Preview Modal
+        const modal = document.getElementById('pdfModal');
+        const previewBtns = document.querySelectorAll('.preview-btn');
+        const closeModal = document.querySelector('.close-modal');
+        const pdfViewer = document.querySelector('.pdf-viewer');
+
+        previewBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pdfFile = btn.getAttribute('data-pdf');
+                pdfViewer.src = pdfFile;
+                modal.style.display = 'flex';
+            });
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+            pdfViewer.src = '';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                pdfViewer.src = '';
+            }
+        });
+    </script>
+</body>
+</html>

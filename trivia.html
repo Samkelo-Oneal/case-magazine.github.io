@@ -1,273 +1,521 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>CASE Magazine Trivia</title>
- <style>
- body {
- font-family: 'Arial', sans-serif;
- background-image: url('your-background-image.jpg'); /* Change this to your background image URL */
- background-size: cover;
- background-position: center;
- color: #333;
- padding: 20px;
- margin: 0;
- }
- .quiz-container {
- background: rgba(255, 255, 255, 0.9);
- border-radius: 10px;
- padding: 20px;
- box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
- max-width: 600px;
- margin: auto;
- }
- h1 {
- color: #4202f4;
- text-align: center;
- margin-bottom: 20px;
- }
- .question {
- font-size: 1.5em;
- margin-bottom: 15px;
- font-weight: bold;
- text-align: center;
- }
- .options {
- margin-bottom: 20px;
- }
- .option {
- display: block;
- margin: 10px 0;
- padding: 15px;
- background: #f0f0f0;
- border-radius: 5px;
- cursor: pointer;
- transition: background 0.3s;
- box-shadow: 0 1px 2px rgba(0,0,0,0.1);
- }
- .option:hover {
- background: #e0e0e0;
- }
- .score {
- text-align: center;
- font-size: 1.5em;
- margin: 20px 0;
- }
- .timer {
- text-align: center;
- font-size: 1.2em;
- color: #ff0000;
- margin: 10px 0;
- }
- .next-btn {
- display: block;
- width: 100%;
- padding: 15px;
- background: #4202f4;
- color: white;
- border: none;
- border-radius: 5px;
- cursor: pointer;
- font-size: 1.2em;
- transition: background 0.3s;
- }
- .next-btn:hover {
- background: #5d5fe2;
- }
- .explanation {
- margin-top: 20px;
- padding: 15px;
- background: #e8f4f8;
- border-radius: 5px;
- display: none;
- text-align: center;
- }
- .final-results {
- text-align: center;
- }
- .replay-btn {
- display: block;
- width: 100%;
- padding: 15px;
- background: #4CAF50;
- color: white;
- border: none;
- border-radius: 5px;
- cursor: pointer;
- font-size: 1.2em;
- margin-top: 20px;
- }
- .replay-btn:hover {
- background: #45a049;
- }
- </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CASE Magazine Trivia Challenge</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, 
+                #0f0c29 0%, 
+                #302b63 50%, 
+                #24243e 100%);
+            color: white;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 20px auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            color: #00d4ff;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+        .tagline {
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        .question {
+            font-size: 1.4em;
+            margin-bottom: 25px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 80px;
+            line-height: 1.4;
+        }
+        .options {
+            margin-bottom: 25px;
+        }
+        .option {
+            display: block;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            background: rgba(0, 212, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+        }
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .score, .timer {
+            font-size: 1.2em;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        .next-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #00d4ff, #4202f4);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
+        }
+        .explanation {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .final-results {
+            text-align: center;
+            display: none;
+            animation: fadeIn 1s ease-out;
+        }
+        .replay-btn, .leaderboard-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        .replay-btn:hover, .leaderboard-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
+        .leaderboard {
+            margin-top: 30px;
+            display: none;
+            animation: fadeIn 1s ease-out;
+        }
+        .leaderboard h2 {
+            color: #00d4ff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .leaderboard ol {
+            padding-left: 20px;
+        }
+        .leaderboard li {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            border-left: 3px solid #00d4ff;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ai-pulse {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, 
+                rgba(0, 212, 255, 0.1) 0%, 
+                rgba(66, 2, 244, 0.05) 50%, 
+                transparent 70%);
+            animation: pulse 15s infinite alternate;
+            z-index: -1;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 0.8; }
+        }
+    </style>
 </head>
 <body>
- <div class="quiz-container">
- <h1>CASE Magazine Trivia</h1>
- <div class="score">Score: <span id="score">0</span></div>
- <div class="timer" id="timer">Time left: <span id="time">15</span>s</div>
- <div class="question" id="question"></div>
- <div class="options" id="options"></div>
- <button class="next-btn" id="next-btn">Next Question</button>
- <div class="explanation" id="explanation"></div>
- <div class="final-results" id="final-results" style="display:none;"></div>
- <button class="replay-btn" id="replay-btn" style="display:none;">Replay Quiz</button>
- </div>
+    <div class="ai-pulse"></div>
+    <div class="quiz-container">
+        <h1>CASE TRIVIA CHALLENGE</h1>
+        <p class="tagline">Test your CASE knowledge against our AI</p>
+        
+        <div class="score-container">
+            <div class="score">Score: <span id="score">0</span></div>
+            <div class="timer">Time: <span id="time">15</span>s</div>
+        </div>
+        
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+        <button class="next-btn" id="next-btn">Next Question</button>
+        <div class="explanation" id="explanation"></div>
+        
+        <div class="final-results" id="final-results"></div>
+        <button class="replay-btn" id="replay-btn">Play Again</button>
+        <button class="leaderboard-btn" id="leaderboard-btn">View Leaderboard</button>
+        
+        <div class="leaderboard" id="leaderboard">
+            <h2>Top Scores</h2>
+            <ol id="leaderboard-list"></ol>
+        </div>
+    </div>
 
- <script>
- const questions = [
- {
- question: "What was the date of the Chernobyl nuclear disaster?",
- options: ["April 26, 1986", "May 12, 1986", "March 28, 1979", "August 6, 1945"],
- answer: 0,
- explanation: "The Chernobyl disaster occurred on April 26, 1986, in reactor #4 of the Soviet plant."
- },
- {
- question: "What was the name of Julius Caesar's most famous wife?",
- options: ["Cleopatra", "Calpurnia", "Cornelia", "Livia"],
- answer: 1,
- explanation: "Calpurnia was Caesar's wife during his assassination. (Psst—Cleopatra was his lover!)"
- },
- {
- question: "What is the name of the largest pyramid in Egypt?",
- options: ["Pyramid of Khafre", "Red Pyramid", "Great Pyramid of Giza", "Bent Pyramid"],
- answer: 2,
- explanation: "The Great Pyramid of Giza, built for Pharaoh Khufu, stands 481 feet tall."
- },
- {
- question: "What is the capital of Belarus?",
- options: ["Kyiv", "Vilnius", "Minsk", "Warsaw"],
- answer: 2,
- explanation: "Minsk has been Belarus's capital since 1919 and survived WWII devastation."
- },
- {
- question: "What is the operating system for Apple phones called?",
- options: ["Android", "iOS", "macOS", "Windows Mobile"],
- answer: 1,
- explanation: "iOS debuted in 2007 with the first iPhone and now powers over 1.5 billion devices."
- },
- {
- question: "Who is often called the 'father of electricity'?",
- options: ["Thomas Edison", "Nikola Tesla", "Benjamin Franklin", "Michael Faraday"],
- answer: 3,
- explanation: "Michael Faraday's 1831 discovery of electromagnetic induction birthed modern electrical engineering."
- }
- ];
+    <script>
+        // ======================
+        // CASE-FOCUSED QUESTIONS (VERIFIED INDEXES)
+        // ======================
+        const questionPool = [
+            {
+                question: "What does CASE stand for?",
+                options: [
+                    "Creative Advertising Solutions Enterprise",
+                    "Clever Advertising & Strategy Expert", 
+                    "Commercial Analysis and Sales Execution",
+                    "Content Advertising Special Effects"
+                ],
+                answer: 1, // Verified correct index
+                explanation: "That's right! CASE = Clever Advertising & Strategy Expert."
+            },
+            {
+                question: "Who is the founder of CASE Magazine?",
+                options: [
+                    "Samkelo Maseko",
+                    "Samkelo Oneal", 
+                    "Siyabonga Tsabedze",
+                    "Sarah Johnson"
+                ],
+                answer: 1, // Verified correct index
+                explanation: "Correct! Samkelo Oneal founded CASE Magazine."
+            },
+            {
+                question: "What business was featured in the first 'Hot Take' section?",
+                options: [
+                    "TechStart Innovations",
+                    "Melissa Hair Rental", 
+                    "Urban Brew Coffee",
+                    "Digital Flow Agency"
+                ],
+                answer: 1, // Verified correct index
+                explanation: "Exactly! Melissa Hair Rental was our debut 'Hot Take' feature."
+            },
+            {
+                question: "What do we call CASE's future predictions section?",
+                options: [
+                    "CASE Forecasts",
+                    "CASE Files", 
+                    "Future CASE Studies",
+                    "The CASE Crystal Ball"
+                ],
+                answer: 1, // Verified correct index
+                explanation: "You got it! 'CASE Files' predicts industry trends."
+            },
+            {
+                question: "Who was featured in the therapy bots article?",
+                options: [
+                    "S. Oneal, S. Maseko, S. Tsabedze",
+                    "S. Oneal, M. Johnson, P. Williams", 
+                    "A. Smith, B. Jones, C. Brown",
+                    "The entire CASE team"
+                ],
+                answer: 0, // Verified correct index
+                explanation: "Correct! Featured S. Oneal, S. Maseko, and S. Tsabedze."
+            },
+            {
+                question: "What's the name of CASE's monthly Q&A series?",
+                options: [
+                    "Ask CASE",
+                    "CASE Closed", 
+                    "The CASE Interview",
+                    "CASE Questions"
+                ],
+                answer: 2, // Verified correct index
+                explanation: "Right! 'The CASE Interview' with industry leaders."
+            },
+            {
+                question: "Which color dominates CASE's branding?",
+                options: [
+                    "Red",
+                    "Blue", 
+                    "Purple (#4202f4)",
+                    "Green"
+                ],
+                answer: 2, // Verified correct index
+                explanation: "Exactly! Our signature purple (#4202f4)."
+            },
+            {
+                question: "What's CASE Magazine's tagline?",
+                options: [
+                    "Where Ideas Flourish",
+                    "Think Different", 
+                    "The Future of Media",
+                    "Knowledge Redefined"
+                ],
+                answer: 0, // Verified correct index
+                explanation: "Correct! 'Where Ideas Flourish' is our tagline."
+            },
+            /* Add more questions here following the same format:
+            {
+                question: "New question?",
+                options: ["A", "B", "C", "D"],
+                answer: 0, // Index of correct answer
+                explanation: "Explanation..."
+            }
+            */
+        ];
 
- let currentQuestion = 0;
- let score = 0;
- let timer;
- const TIMER_DURATION = 15; // 15 seconds for each question
+        // ======================
+        // GAME ENGINE
+        // ======================
+        let currentQuestion = 0;
+        let score = 0;
+        let timer;
+        const TIMER_DURATION = 15;
+        const QUESTIONS_PER_GAME = 10; // Pick 10 random questions
+        let leaderboard = JSON.parse(localStorage.getItem('caseLeaderboard')) || [];
+        let selectedQuestions = [];
 
- const questionEl = document.getElementById('question');
- const optionsEl = document.getElementById('options');
- const scoreEl = document.getElementById('score');
- const timeEl = document.getElementById('time');
- const nextBtn = document.getElementById('next-btn');
- const explanationEl = document.getElementById('explanation');
- const finalResultsEl = document.getElementById('final-results');
- const replayBtn = document.getElementById('replay-btn');
+        // DOM Elements
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const scoreEl = document.getElementById('score');
+        const timeEl = document.getElementById('time');
+        const nextBtn = document.getElementById('next-btn');
+        const explanationEl = document.getElementById('explanation');
+        const finalResultsEl = document.getElementById('final-results');
+        const replayBtn = document.getElementById('replay-btn');
+        const leaderboardBtn = document.getElementById('leaderboard-btn');
+        const leaderboardEl = document.getElementById('leaderboard');
+        const leaderboardList = document.getElementById('leaderboard-list');
 
- function loadQuestion() {
- const q = questions[currentQuestion];
- questionEl.textContent = q.question;
+        // Initialize game
+        function initGame() {
+            // Reset game state
+            currentQuestion = 0;
+            score = 0;
+            scoreEl.textContent = score;
+            
+            // Select random questions
+            selectedQuestions = getRandomQuestions(QUESTIONS_PER_GAME);
+            
+            // Hide/show appropriate elements
+            finalResultsEl.style.display = 'none';
+            replayBtn.style.display = 'none';
+            leaderboardBtn.style.display = 'none';
+            leaderboardEl.style.display = 'none';
+            questionEl.style.display = 'block';
+            
+            // Load first question
+            loadQuestion();
+        }
 
- optionsEl.innerHTML = '';
- q.options.forEach((option, index) => {
-  const optionEl = document.createElement('div');
-  optionEl.classList.add('option');
-  optionEl.textContent = option;
-  optionEl.addEventListener('click', () => selectOption(index));
-  optionsEl.appendChild(optionEl);
- });
+        // Get random subset of questions
+        function getRandomQuestions(count) {
+            const shuffled = [...questionPool].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, Math.min(count, questionPool.length));
+        }
 
- explanationEl.style.display = 'none';
- nextBtn.style.display = 'none';
- selectedOption = null;
- startTimer();
- }
+        // Load question
+        function loadQuestion() {
+            const q = selectedQuestions[currentQuestion];
+            questionEl.textContent = q.question;
+            
+            // Shuffle options while preserving correct answer index
+            const optionsWithIndexes = q.options.map((option, index) => ({ option, index }));
+            const shuffledOptions = [...optionsWithIndexes].sort(() => 0.5 - Math.random());
+            const correctShuffledIndex = shuffledOptions.findIndex(item => item.index === q.answer);
+            
+            optionsEl.innerHTML = '';
+            shuffledOptions.forEach((item, displayIndex) => {
+                const optionEl = document.createElement('div');
+                optionEl.classList.add('option');
+                optionEl.textContent = item.option;
+                optionEl.addEventListener('click', () => selectOption(displayIndex, correctShuffledIndex));
+                optionsEl.appendChild(optionEl);
+            });
 
- function startTimer() {
- let timeLeft = TIMER_DURATION;
- timeEl.textContent = timeLeft;
+            explanationEl.style.display = 'none';
+            nextBtn.style.display = 'none';
+            startTimer();
+        }
 
- timer = setInterval(() => {
-  if (timeLeft > 0) {
-   timeLeft--;
-   timeEl.textContent = timeLeft;
-  } else {
-   clearInterval(timer);
-   selectOption(-1); // Time's up, treat as wrong selection
-  }
- }, 1000);
- }
+        // Timer functions
+        function startTimer() {
+            let timeLeft = TIMER_DURATION;
+            timeEl.textContent = timeLeft;
+            clearInterval(timer);
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                timeEl.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timeUp();
+                }
+            }, 1000);
+        }
 
- function selectOption(index) {
- clearInterval(timer);
- const options = document.querySelectorAll('.option');
+        function timeUp() {
+            const q = selectedQuestions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            const correctIndex = q.options.indexOf(q.options[q.answer]);
+            
+            options.forEach((option, index) => {
+                option.style.cursor = 'default';
+                option.style.background = index === correctIndex ? 
+                    'rgba(165, 214, 167, 0.3)' : 
+                    'rgba(255, 255, 255, 0.1)';
+                option.style.border = index === correctIndex ? 
+                    '1px solid #a5d6a7' : 
+                    '1px solid rgba(0, 212, 255, 0.3)';
+            });
+            
+            explanationEl.textContent = "Time's up! " + q.explanation;
+            explanationEl.style.display = 'block';
+            nextBtn.style.display = 'block';
+        }
 
- if (index !== -1) {
-  selectedOption = index;
+        // Select option
+        function selectOption(selectedIndex, correctIndex) {
+            clearInterval(timer);
+            const q = selectedQuestions[currentQuestion];
+            const options = document.querySelectorAll('.option');
 
-  options.forEach((option, i) => {
-   if (i === questions[currentQuestion].answer) {
-    option.style.background = '#a5d6a7'; // Green for correct
-   } else if (i === index) {
-    option.style.background = '#ef9a9a'; // Red for wrong
-   }
-   option.style.cursor = 'default';
-  });
+            options.forEach((option, index) => {
+                option.style.cursor = 'default';
+                if (index === correctIndex) {
+                    option.style.background = 'rgba(165, 214, 167, 0.3)';
+                    option.style.border = '1px solid #a5d6a7';
+                } else if (index === selectedIndex) {
+                    option.style.background = 'rgba(239, 154, 154, 0.3)';
+                    option.style.border = '1px solid #ef9a9a';
+                }
+            });
 
-  if (index === questions[currentQuestion].answer) {
-   score++;
-   scoreEl.textContent = score;
-  }
+            if (selectedIndex === correctIndex) {
+                score++;
+                scoreEl.textContent = score;
+            }
 
-  explanationEl.textContent = questions[currentQuestion].explanation;
-  explanationEl.style.display = 'block';
-  nextBtn.style.display = 'block';
- } else {
-  options[currentQuestion].style.background = '#ef9a9a'; // Show as wrong if time is up
-  explanationEl.textContent = "Time's up! The correct answer was: " + questions[currentQuestion].options[questions[currentQuestion].answer];
-  explanationEl.style.display = 'block';
-  nextBtn.style.display = 'block';
- }
- }
+            explanationEl.textContent = q.explanation;
+            explanationEl.style.display = 'block';
+            nextBtn.style.display = 'block';
+        }
 
- function nextQuestion() {
- currentQuestion++;
- if (currentQuestion < questions.length) {
-  loadQuestion();
- } else {
-  showResults();
- }
- }
+        // Next question
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < selectedQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
 
- function showResults() {
-  questionEl.style.display = 'none';
-  optionsEl.innerHTML = '';
-  nextBtn.style.display = 'none';
-  explanationEl.style.display = 'none';
-  finalResultsEl.innerHTML = `Quiz complete! Your score: ${score}/${questions.length} (${(score / questions.length * 100).toFixed(2)}%)`;
-  finalResultsEl.style.display = 'block';
-  replayBtn.style.display = 'block';
- }
+        // Show final results
+        function showResults() {
+            questionEl.style.display = 'none';
+            optionsEl.innerHTML = '';
+            nextBtn.style.display = 'none';
+            explanationEl.style.display = 'none';
+            
+            const percentage = Math.round((score / selectedQuestions.length) * 100);
+            let message;
+            
+            if (percentage >= 90) {
+                message = `CASE Expert! 🎉 ${score}/${selectedQuestions.length} (${percentage}%) - You're a CASE superstar!`;
+            } else if (percentage >= 70) {
+                message = `Great job! 👍 ${score}/${selectedQuestions.length} (${percentage}%) - Solid CASE knowledge!`;
+            } else if (percentage >= 50) {
+                message = `Good effort! 🤔 ${score}/${selectedQuestions.length} (${percentage}%) - Read more CASE issues!`;
+            } else {
+                message = `Keep learning! 📚 ${score}/${selectedQuestions.length} (${percentage}%) - Explore our archives!`;
+            }
+            
+            finalResultsEl.innerHTML = message;
+            finalResultsEl.style.display = 'block';
+            replayBtn.style.display = 'block';
+            leaderboardBtn.style.display = 'block';
+            
+            // Save to leaderboard
+            const playerName = prompt("Enter your name for the leaderboard:");
+            if (playerName && playerName.trim() !== '') {
+                leaderboard.push({
+                    name: playerName.trim(),
+                    score: score,
+                    total: selectedQuestions.length,
+                    date: new Date().toLocaleDateString()
+                });
+                
+                // Sort and keep top 10
+                leaderboard.sort((a, b) => (b.score/b.total) - (a.score/a.total));
+                leaderboard = leaderboard.slice(0, 10);
+                
+                localStorage.setItem('caseLeaderboard', JSON.stringify(leaderboard));
+                updateLeaderboard();
+            }
+        }
 
- function replayQuiz() {
- currentQuestion = 0;
- score = 0;
- scoreEl.textContent = score;
- finalResultsEl.style.display = 'none';
- replayBtn.style.display = 'none';
- loadQuestion();
- }
+        // Leaderboard functions
+        function updateLeaderboard() {
+            leaderboardList.innerHTML = '';
+            leaderboard.forEach((entry, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${entry.name}</strong>: ${entry.score}/${entry.total} (${Math.round((entry.score/entry.total)*100)}%) - ${entry.date}`;
+                leaderboardList.appendChild(li);
+            });
+        }
 
- nextBtn.addEventListener('click', nextQuestion);
- replayBtn.addEventListener('click', replayQuiz);
+        function showLeaderboard() {
+            leaderboardEl.style.display = 'block';
+            finalResultsEl.style.display = 'none';
+            replayBtn.style.display = 'block';
+            leaderboardBtn.style.display = 'none';
+        }
 
- loadQuestion();
- </script>
+        // Event listeners
+        nextBtn.addEventListener('click', nextQuestion);
+        replayBtn.addEventListener('click', initGame);
+        leaderboardBtn.addEventListener('click', showLeaderboard);
+
+        // Initialize
+        initGame();
+        updateLeaderboard();
+    </script>
 </body>
 </html>

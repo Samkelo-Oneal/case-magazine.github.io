@@ -10,7 +10,7 @@
         :root {
             --primary: #2a2a2a;
             --secondary: #1a1a1a;
-            --accent: #4202f4;
+            --accent: #D4AF37; /* Gold accent color */
             --text: #f0f0f0;
             --light-gray: #444;
         }
@@ -112,7 +112,7 @@
             display: inline-block;
             padding: 12px 30px;
             background-color: var(--accent);
-            color: white;
+            color: #1a1a1a; /* Dark text for gold buttons */
             text-decoration: none;
             border-radius: 5px;
             font-weight: bold;
@@ -120,15 +120,17 @@
             transition: all 0.2s;
         }
         .btn:hover {
-            background-color: #2a00c0;
+            background-color: #B7950B; /* Darker gold on hover */
             transform: translateY(-2px);
         }
         .btn-outline {
             background-color: transparent;
             border: 2px solid var(--accent);
+            color: var(--accent);
         }
         .btn-outline:hover {
             background-color: var(--accent);
+            color: #1a1a1a;
         }
         .btn-trivia {
             background-color: #ff6b00;
@@ -159,6 +161,23 @@
             object-fit: contain;
             background-color: #2a2a2a;
         }
+
+
+        .request-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #D4AF37;
+        }
+        .btn-request {
+            background-color: transparent;
+            border: 2px solid #D4AF37;
+            color: #D4AF37;
+            margin-top: 10px;
+        }
+        .btn-request:hover {
+            background-color: rgba(212, 175, 55, 0.1);
+        }
+
 
         /* Issues Grid */
         .issues-grid {
@@ -227,6 +246,97 @@
             border-radius: 5px;
         }
 
+        /* Passkey Modal - Gold Styled */
+        .passkey-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 300;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .passkey-content {
+            background-color: #1a1a1a;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+        
+        .passkey-content h2 {
+            margin-bottom: 20px;
+            color: var(--accent);
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        .passkey-content label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .passkey-content input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background-color: #2a2a2a;
+            border: 1px solid var(--accent);
+            border-radius: 5px;
+            color: var(--text);
+            font-size: 16px;
+        }
+        
+        .passkey-content .btn {
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            font-size: 16px;
+            background-color: var(--accent);
+            color: #1a1a1a;
+            border: none;
+            font-weight: bold;
+        }
+        
+        .close-passkey {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--accent);
+            transition: transform 0.2s;
+        }
+        
+        .close-passkey:hover {
+            transform: scale(1.2);
+        }
+        
+        .error-message {
+            color: #ff4444;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .success-message {
+            color: #4CAF50;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+            font-weight: bold;
+        }
+
         /* Footer */
         footer {
             margin-left: 250px;
@@ -279,7 +389,7 @@
         <ul class="nav-links">
             <li><a href="#">Home</a></li>
             <li><a href="#issues">Issues</a></li>
-            <li><a href="#">About</a></li>
+            <li><a href="admin.html">Admin</a></li>
             <li><a href="#">Contact</a></li>
         </ul>
         <div class="social-links">
@@ -304,7 +414,7 @@
 Don't miss the opportunity to enhance your expertise and stay ahead of the curve. Subscribe today to enjoy a wealth of knowledge and inspiration designed for your success.
 CASE Magazine: Where Ideas Flourish and Opportunities Abound.</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn">Buy Latest Issue</a>
+                    <a href="#" class="btn buy-btn" data-issue="Latest_Issue.pdf">Buy Latest Issue</a>
                     <a href="#" class="btn btn-outline">Free Sample</a>
                     <a href="trivia.html" class="btn btn-trivia">Play Trivia Challenge</a>
                 </div>
@@ -323,7 +433,7 @@ CASE Magazine: Where Ideas Flourish and Opportunities Abound.</p>
                         <h3>Issue #3: The Future of Design</h3>
                         <p>Exploring cutting-edge trends in modern design</p>
                         <div class="issue-actions">
-                            <a href="#" class="btn" style="padding: 8px 15px;">Buy</a>
+                            <a href="#" class="btn buy-btn" style="padding: 8px 15px;" data-issue="Issue_One.pdf">Buy</a>
                             <a href="#" class="btn btn-outline preview-btn" style="padding: 8px 15px;" data-pdf="pdfs/Issue One.pdf">Preview</a>
                         </div>
                     </div>
@@ -336,7 +446,7 @@ CASE Magazine: Where Ideas Flourish and Opportunities Abound.</p>
                         <h3>Issue #2: Creative Minds</h3>
                         <p>Profiles of the most innovative thinkers today</p>
                         <div class="issue-actions">
-                            <a href="#" class="btn" style="padding: 8px 15px;">Buy</a>
+                            <a href="#" class="btn buy-btn" style="padding: 8px 15px;" data-issue="Issue_Two.pdf">Buy</a>
                             <a href="#" class="btn btn-outline preview-btn" style="padding: 8px 15px;" data-pdf="pdfs/Issue One.pdf">Preview</a>
                         </div>
                     </div>
@@ -349,7 +459,7 @@ CASE Magazine: Where Ideas Flourish and Opportunities Abound.</p>
                         <h3>Issue #1: Minimalism</h3>
                         <p>The art of doing more with less</p>
                         <div class="issue-actions">
-                            <a href="#" class="btn" style="padding: 8px 15px;">Buy</a>
+                            <a href="#" class="btn buy-btn" style="padding: 8px 15px;" data-issue="Issue_Three.pdf">Buy</a>
                             <a href="#" class="btn btn-outline preview-btn" style="padding: 8px 15px;" data-pdf="pdfs/Issue One.pdf">Preview</a>
                         </div>
                     </div>
@@ -366,9 +476,37 @@ CASE Magazine: Where Ideas Flourish and Opportunities Abound.</p>
         </div>
     </div>
 
+ <!-- Updated Passkey Modal -->
+    <div class="passkey-modal" id="passkeyModal">
+        <div class="passkey-content">
+            <span class="close-passkey">&times;</span>
+            <h2>ACCESS PREMIUM CONTENT</h2>
+            <form id="passkeyForm">
+                <label for="name">FULL NAME:</label>
+                <input type="text" id="name" required placeholder="Your full name">
+                
+                <label for="number">PHONE NUMBER:</label>
+                <input type="tel" id="number" required placeholder="+268 123 4567">
+                
+                <label for="passkey">PASSKEY:</label>
+                <input type="text" id="passkey" placeholder="8-character code (if you have one)">
+                
+                <button type="submit" class="btn">VERIFY & DOWNLOAD</button>
+                <p class="error-message" id="errorMessage">INVALID PASSKEY!</p>
+                <p class="success-message" id="successMessage">ACCESS GRANTED! DOWNLOAD STARTING...</p>
+
+                <div class="request-section">
+                    <p>Don't have a passkey yet?</p>
+                    <button type="button" class="btn btn-request" id="requestBtn">REQUEST ACCESS</button>
+                    <p class="success-message" id="requestMessage" style="display:none;">Request received! We'll contact you shortly.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer>
-        <p>&copy; 2025 CASE Magazine. All rights reserved.</p>
+        <p>&copy; 2025 CASE Magazine. All rights reserved. For more info contact: +268 7838 6941</p>
     </footer>
 
     <!-- JavaScript -->
@@ -407,6 +545,126 @@ CASE Magazine: Where Ideas Flourish and Opportunities Abound.</p>
                 pdfViewer.src = '';
             }
         });
+
+        // ===== PASSKEY SYSTEM ===== //
+        // Predefined passkeys (10 codes)
+        const validPasskeys = [
+            "CASE2024", 
+            "MAGAZINE", 
+            "PREMIUM1", 
+            "ACCESS24", 
+            "CONTENT8", 
+            "READNOW", 
+            "VIPPASS", 
+            "DIGITAL8", 
+            "SUB2024", 
+            "LASTCODE"
+        ];
+
+        // Modal elements
+        const passkeyModal = document.getElementById('passkeyModal');
+        const buyBtns = document.querySelectorAll('.buy-btn');
+        const closePasskey = document.querySelector('.close-passkey');
+        const passkeyForm = document.getElementById('passkeyForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        let currentPdf = '';
+
+        // Show modal when buy button clicked
+        buyBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPdf = btn.getAttribute('data-issue');
+                passkeyModal.style.display = 'flex';
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+            });
+        });
+
+        // Close modal
+        closePasskey.addEventListener('click', () => {
+            passkeyModal.style.display = 'none';
+            passkeyForm.reset();
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === passkeyModal) {
+                passkeyModal.style.display = 'none';
+                passkeyForm.reset();
+            }
+        });
+
+        // Form submission
+        passkeyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const number = document.getElementById('number').value.trim();
+            const passkey = document.getElementById('passkey').value.trim().toUpperCase();
+            
+            // Validate passkey
+            if (!validPasskeys.includes(passkey)) {
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Save user data
+            const userData = JSON.parse(localStorage.getItem('magazineData')) || [];
+            userData.push({
+                name: name,
+                phone: number,
+                passkey: passkey,
+                issue: currentPdf,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('magazineData', JSON.stringify(userData));
+            
+            // Valid passkey
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'block';
+            
+            // Start download
+            setTimeout(() => {
+                const downloadLink = document.createElement('a');
+                downloadLink.href = `pdfs/${currentPdf}`;
+                downloadLink.download = currentPdf;
+                downloadLink.click();
+                
+                passkeyModal.style.display = 'none';
+                passkeyForm.reset();
+            }, 1500);
+        });
+
+          // Add this to your existing JavaScript
+        document.getElementById('requestBtn').addEventListener('click', function() {
+            const name = document.getElementById('name').value.trim();
+            const number = document.getElementById('number').value.trim();
+            
+            if (!name || !number) {
+                alert('Please enter your name and number first');
+                return;
+            }
+
+            // Save request to localStorage
+            const requests = JSON.parse(localStorage.getItem('magazineRequests')) || [];
+            requests.push({
+                name: name,
+                phone: number,
+                issue: currentPdf,
+                timestamp: new Date().toISOString(),
+                status: 'Pending'
+            });
+            localStorage.setItem('magazineRequests', JSON.stringify(requests));
+            
+            document.getElementById('requestMessage').style.display = 'block';
+            setTimeout(() => {
+                passkeyModal.style.display = 'none';
+                passkeyForm.reset();
+            }, 2000);
+        });
+
+        // For admin reference
+        console.log('VALID PASSKEYS:', validPasskeys);
     </script>
 </body>
 </html>

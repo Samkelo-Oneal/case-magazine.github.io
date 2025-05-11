@@ -398,10 +398,11 @@
         // ========================
         // ORIGINAL DASHBOARD CODE
         // ========================
-        let validPasskeys = JSON.parse(localStorage.getItem('magazinePasskeys')) || [
-            "CASE2024", "MAGAZINE", "PREMIUM1", "ACCESS24", "CONTENT8", 
-            "READNOW", "VIPPASS", "DIGITAL8", "SUB2024", "LASTCODE"
-        ];
+        const passkeyStorage = JSON.parse(localStorage.getItem('magazinePasskeys'));
+const validPasskeys = passkeyStorage?.keys || [
+    "CASE2024", "MAGAZINE", "PREMIUM1", "ACCESS24", "CONTENT8",
+    "READNOW", "VIPPASS", "DIGITAL8", "SUB2024", "LASTCODE"
+];
         
         let downloadData = JSON.parse(localStorage.getItem('magazineData')) || [];
         let requestData = JSON.parse(localStorage.getItem('magazineRequests')) || [];
@@ -472,39 +473,108 @@
                 });
             }
 
-            // Approve request
-            window.approveRequest = function(index) {
-                const request = requestData[index];
-                const passkey = validPasskeys[index % validPasskeys.length];
-                
-                if (confirm(`Approve request from ${request.name}?\nPasskey: ${passkey}`)) {
-                    requestData[index].status = 'Approved';
-                    requestData[index].passkeyIssued = passkey;
-                    localStorage.setItem('magazineRequests', JSON.stringify(requestData));
-                    alert(`Approved! Send passkey to ${request.phone}: ${passkey}`);
-                    loadRequests();
-                }
-            };
 
-            // Generate passkeys
-            document.getElementById('generatePasskeys').addEventListener('click', function() {
-                if (confirm('Generate 10 new passkeys? Existing codes will be invalidated.')) {
-                    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-                    validPasskeys = [];
-                    
-                    while (validPasskeys.length < 10) {
-                        let passkey = '';
-                        for (let i = 0; i < 8; i++) {
-                            passkey += chars.charAt(Math.floor(Math.random() * chars.length));
-                        }
-                        if (!validPasskeys.includes(passkey)) validPasskeys.push(passkey);
-                    }
-                    
-                    localStorage.setItem('magazinePasskeys', JSON.stringify(validPasskeys));
-                    loadPasskeys();
-                    alert('New passkeys generated!');
-                }
-            });
+            // Add this new function
+function isPasskeyAvailable(passkey) {
+    const allRecords = [
+        ...JSON.parse(localStorage.getItem('magazineData')) || [],
+        ...JSON.parse(localStorage.getItem('magazineRequests')) || []
+    ];
+    return !allRecords.some(record => 
+        record.passkey === passkey || record.passkeyIssued === passkey
+    );
+}
+
+            function approveRequest(index) {
+    const request = requestData[index];
+    const availablePasskeys = validPasskeys.filter(isPasskeyAvailable);
+    
+    if (availablePasskeys.length === 0) {
+        alert("No available passkeys! Generate new ones first.");
+        return;
+    }
+
+    const passkey = availablePasskeys[index % availablePasskeys.length];
+    
+    if (confirm(`Approve request from ${request.name}?\nUnused Passkey: ${passkey}`)) {
+        requestData[index].status = 'Approved';
+        requestData[index].passkeyIssued = passkey;
+        localStorage.setItem('magazineRequests', JSON.stringify(requestData));
+        alert(`Approved! Unique passkey assigned: ${passkey}`);
+        loadRequests();
+    }
+}
+
+           // Replace the existing generatePasskeys() function with:
+function generatePasskeys() {
+    if (confirm('Generate 10 new passkeys? This will invalidate all existing codes.')) {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        validPasskeys = [];
+        
+        while (validPasskeys.length < 10) {
+            let passkey = '';
+            for (let i = 0; i < 8; i++) {
+                passkey += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            if (!validPasskeys.includes(passkey)) {
+                validPasskeys.push(passkey);
+            }
+        }
+        
+        // Store with timestamp
+        localStorage.setItem('magazinePasskeys', JSON.stringify({
+            keys: validPasskeys,
+            generatedAt: new Date().toISOString()
+        }));
+        
+        loadPasskeys();
+        alert('New passkeys active immediately!');
+    }
+}
+
+// Add this new function to track usage:
+function getUsedPasskeys() {
+    const used = new Set();
+    
+    // Check download records
+    downloadData.forEach(download => {
+        if (download.passkey) used.add(download.passkey);
+    });
+    
+    // Check approved requests
+    requestData.forEach(request => {
+        if (request.passkeyIssued) used.add(request.passkeyIssued);
+    });
+    
+    return Array.from(used);
+}
+
+// Update loadPasskeys() to show usage:
+function loadPasskeys() {
+    const list = document.getElementById('passkeyList');
+    list.innerHTML = '';
+    
+    const usedKeys = getUsedPasskeys();
+    
+    validPasskeys.forEach(passkey => {
+        const item = document.createElement('li');
+        item.textContent = passkey;
+        item.style.marginBottom = '8px';
+        item.style.fontFamily = 'monospace';
+        
+        if (usedKeys.includes(passkey)) {
+            item.style.color = '#ff6b6b';
+            item.style.textDecoration = 'line-through';
+            item.title = 'Used on ' + new Date(
+                [...downloadData, ...requestData]
+                .find(d => d.passkey === passkey || d.passkeyIssued === passkey)
+                .timestamp
+            ).toLocaleString();
+        }
+        
+        list.appendChild(item);
+    });
+}
 
             // Export data
             document.getElementById('exportDownloads').addEventListener('click', () => exportData(downloadData, 'case-downloads'));

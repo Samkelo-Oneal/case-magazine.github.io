@@ -620,18 +620,23 @@ CASE Magazine: Where Ideas Flourish and Opportunities Abound.</p>
 
         // ===== PASSKEY SYSTEM ===== //
         // Predefined passkeys (10 codes)
-        const validPasskeys = [
-            "CASE2024", 
-            "MAGAZINE", 
-            "PREMIUM1", 
-            "ACCESS24", 
-            "CONTENT8", 
-            "READNOW", 
-            "VIPPASS", 
-            "DIGITAL8", 
-            "SUB2024", 
-            "LASTCODE"
-        ];
+        const passkeyData = JSON.parse(localStorage.getItem('magazinePasskeys')) || {
+    keys: [
+        "CASE2024", "MAGAZINE", "PREMIUM1", "ACCESS24", "CONTENT8",
+        "READNOW", "VIPPASS", "DIGITAL8", "SUB2024", "LASTCODE"
+    ]
+};
+const validPasskeys = passkeyData.keys;
+
+        function isPasskeyAvailable(passkey) {
+    const allRecords = [
+        ...JSON.parse(localStorage.getItem('magazineData')) || [],
+        ...JSON.parse(localStorage.getItem('magazineRequests')) || []
+    ];
+    return !allRecords.some(record => 
+        record.passkey === passkey || record.passkeyIssued === passkey
+    );
+}
 
         // Modal elements
         const passkeyModal = document.getElementById('passkeyModal');
@@ -675,10 +680,11 @@ CASE Magazine: Where Ideas Flourish and Opportunities Abound.</p>
             const passkey = document.getElementById('passkey').value.trim().toUpperCase();
             
             // Validate passkey
-            if (!validPasskeys.includes(passkey)) {
-                errorMessage.style.display = 'block';
-                return;
-            }
+            if (!validPasskeys.includes(passkey) || !isPasskeyAvailable(passkey)) {
+    errorMessage.textContent = "Invalid or already used passkey!";
+    errorMessage.style.display = 'block';
+    return;
+}
             
             // Save user data
             const userData = JSON.parse(localStorage.getItem('magazineData')) || [];
